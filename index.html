@@ -15,13 +15,13 @@
 
       .gimbocha-primary {
         background-color: #df8b99;
-      } /* Pink/Rose */
+      }
       .gimbocha-primary-text {
         color: #df8b99;
       }
       .gimbocha-secondary {
         background-color: #2a6f78;
-      } /* Teal */
+      }
       .gimbocha-secondary-text {
         color: #2a6f78;
       }
@@ -104,12 +104,57 @@
       class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-white transition-opacity duration-300"
     >
       <div class="text-6xl animate-bounce mb-4 text-[#df8b99]">✨</div>
-      <p class="text-xl font-bold tracking-wider animate-pulse">
+      <p
+        class="text-xl font-bold tracking-wider animate-pulse"
+        id="loader-text"
+      >
         กำลังบันทึกข้อมูล...
       </p>
-      <p class="text-sm text-[#f0e6d2] mt-2 opacity-80">
-        กรุณารอสักครู่ ห้ามปิดหน้าจอ
+      <p class="text-xs text-[#f0e6d2] mt-4 opacity-60">
+        ระบบจะรีเฟรชเองหากรอนานเกิน 10 วินาที
       </p>
+    </div>
+
+    <div
+      id="verify-modal"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[90] hidden flex-col items-center justify-center p-4 transition-opacity duration-200"
+    >
+      <div
+        class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm animate-[fadeIn_0.2s_ease-out] relative"
+      >
+        <div class="text-center mb-5">
+          <div class="text-5xl mb-2 drop-shadow-sm">🔐</div>
+          <h3 class="text-xl font-bold text-[#4B2A1D] leading-tight">
+            ยืนยันความสะอาด<br />โดยพนักงานประจำ
+          </h3>
+          <p
+            class="text-sm font-bold text-[#df8b99] mt-3 mb-4 p-2 bg-[#df8b99]/10 rounded-xl"
+            id="verify-task-name"
+          >
+            ชื่องาน
+          </p>
+        </div>
+        <input
+          type="password"
+          id="verifier-code"
+          placeholder="ใส่รหัสลับ (PIN)"
+          class="w-full text-center text-3xl tracking-[0.3em] p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+        />
+        <div class="flex gap-2">
+          <button
+            onclick="closeVerifyModal()"
+            class="w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl hover:bg-[#e0d6c2] transition"
+          >
+            ยกเลิก
+          </button>
+          <button
+            onclick="confirmTaskProgress()"
+            class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl hover:opacity-90 transition shadow-md"
+          >
+            ยืนยันรหัส!
+          </button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -248,7 +293,6 @@
                 🎯 ประสิทธิภาพสาขา (เดือนนี้)
               </h3>
             </div>
-
             <div class="flex justify-between items-end mt-4 mb-2">
               <div>
                 <p class="text-[10px] text-[#5eead4] mb-0.5">
@@ -265,7 +309,6 @@
                 >0%</span
               >
             </div>
-
             <div
               class="w-full bg-[#115e59] rounded-full h-4 overflow-hidden border border-[#0f766e] mb-4 shadow-inner"
             >
@@ -275,7 +318,6 @@
                 style="width: 0%"
               ></div>
             </div>
-
             <div
               class="flex items-center gap-2 pt-3 border-t border-[#115e59]/50"
             >
@@ -285,16 +327,14 @@
               <div class="flex gap-2">
                 <span
                   class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
+                  >เดือนที่แล้ว
+                  <span id="stat-last1" class="text-white ml-1">0%</span></span
                 >
-                  เดือนที่แล้ว
-                  <span id="stat-last1" class="text-white ml-1">0%</span>
-                </span>
                 <span
                   class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
+                  >2 เดือนก่อน
+                  <span id="stat-last2" class="text-white ml-1">0%</span></span
                 >
-                  2 เดือนก่อน
-                  <span id="stat-last2" class="text-white ml-1">0%</span>
-                </span>
               </div>
             </div>
           </div>
@@ -314,7 +354,7 @@
               <span
                 id="score-k1"
                 class="font-bold gimbocha-secondary-text text-lg transition-all duration-500"
-                >0</span
+                >0%</span
               >
             </div>
             <div class="flex justify-between items-end mt-3 mb-1">
@@ -324,10 +364,11 @@
               <span
                 id="score-sc"
                 class="font-bold gimbocha-primary-text text-lg transition-all duration-500"
-                >0</span
+                >0%</span
               >
             </div>
           </section>
+
           <section class="gimbocha-card p-6 rounded-[2rem]">
             <h3
               class="text-sm font-bold text-[#4B2A1D]/50 mb-4 uppercase tracking-wider text-center"
@@ -437,7 +478,7 @@
               <div>
                 <label
                   class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
-                  >ความถี่ (Frequency)</label
+                  >ความถี่</label
                 >
                 <select
                   id="add-task-freq"
@@ -450,21 +491,39 @@
                 </select>
               </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
-                >โซนพื้นที่ (Zone)</label
-              >
-              <select
-                id="add-task-zone"
-                class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
-              >
-                <option value="หน้าร้าน">หน้าร้าน</option>
-                <option value="บาร์">บาร์</option>
-                <option value="ครัว">ครัว</option>
-                <option value="ที่นั่งบริการลูกค้า">ที่นั่งบริการลูกค้า</option>
-                <option value="หลังร้านและโรงรถ">หลังร้านและโรงรถ</option>
-              </select>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
+                  >โซนพื้นที่</label
+                >
+                <select
+                  id="add-task-zone"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                >
+                  <option value="หน้าร้าน">หน้าร้าน</option>
+                  <option value="บาร์">บาร์</option>
+                  <option value="ครัว">ครัว</option>
+                  <option value="ที่นั่งบริการลูกค้า">ที่นั่งบริการ</option>
+                  <option value="หลังร้านและโรงรถ">หลังร้านและโรงรถ</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
+                  >สาขาเฉพาะเจาะจง</label
+                >
+                <select
+                  id="add-task-branch"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                >
+                  <option value="ทุกสาขา">📍 ทุกสาขา</option>
+                  <option value="เกษมสันต์ 1">เกษมสันต์ 1</option>
+                  <option value="เสาชิงช้า">เสาชิงช้า</option>
+                </select>
+              </div>
             </div>
+
             <div class="flex gap-2 pt-2">
               <button
                 id="btn-cancel-edit"
@@ -504,10 +563,22 @@
     </div>
 
     <script>
-      // 🛑 ฝัง API URL ตามที่คุณระบุ
+      // 🛑 อัปเดต URL ใหม่เรียบร้อยแล้ว
       const API_URL =
-        "https://script.google.com/macros/s/AKfycbxUTRYo86kYpyHEhGHfg8vz-_BwtKtEfIY2uL8DvoXQH-93dPKTrEd6hGMCCCI90a0/exec";
+        "https://script.google.com/macros/s/AKfycbz1oAH94b3Sr_y22lPsKe0OFeTuPyu6GibK822yUyAFYb-YbritcS1CiFnctk-qqfI/exec";
 
+      // 🌟 ตั้งค่ารหัสลับ (Code Name) แก้ไข/เพิ่มเติมได้ที่นี่ครับ
+      const VERIFIER_CODES = {
+        1111: "แบม",
+        2222: "มาร์ค",
+        3333: "ฮารุ",
+        4444: "จีน",
+        5555: "ต้นน้ำ",
+        9999: "บอส",
+      };
+
+      // 🌟 ตัวแปรเก็บสถานะการทำงาน
+      let pendingTaskData = null;
       let userState = { phone: "", name: "", branch: "" };
       let currentTasks = [];
       let editingTaskId = null;
@@ -543,6 +614,24 @@
         }
       }
 
+      // 🌟 ท่าไม้ตาย แก้ปัญหา CORS: ส่งข้อมูลผ่าน URL Parameters (GET Request)
+      async function fetchAPI(payload) {
+        const url = `${API_URL}?payload=${encodeURIComponent(JSON.stringify(payload))}`;
+        try {
+          const res = await fetch(url);
+          const text = await res.text(); // อ่านสิ่งที่ Google ตอบกลับมาก่อน
+          try {
+            return JSON.parse(text); // ถ้าเป็น JSON ปกติ แปลว่าสำเร็จ
+          } catch (parseError) {
+            console.error("Google ตอบกลับมาผิดปกติ:", text);
+            throw new Error("Invalid Server Response");
+          }
+        } catch (networkError) {
+          console.error("Network Error:", networkError);
+          throw networkError;
+        }
+      }
+
       async function handleLogin() {
         const phone = document.getElementById("login-phone").value.trim();
         const name = document.getElementById("login-name").value.trim();
@@ -559,10 +648,10 @@
         btn.innerHTML = "⏳ กำลังเข้าระบบ...";
 
         try {
-          const res = await fetch(
-            `${API_URL}?action=loginOrRegister&phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`,
-          );
+          const url = `${API_URL}?action=loginOrRegister&phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`;
+          const res = await fetch(url);
           const data = await res.json();
+
           if (data.status === "success") {
             userState.phone = data.phone;
             userState.name = data.name;
@@ -576,6 +665,7 @@
         } catch (e) {
           err.innerText = "เชื่อมต่อไม่ได้ ลองเช็คเน็ตดูนะคะ";
           err.classList.remove("hidden");
+          console.error(e);
         } finally {
           btn.disabled = false;
           btn.innerText = "เริ่มงานเลย!";
@@ -600,12 +690,12 @@
 
       function getFrequencyBadge(freq) {
         if (freq === "รายสัปดาห์")
-          return `<span class="inline-block bg-[#f3e8ff] text-[#7e22ce] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1">สัปดาห์ละครั้ง</span>`;
+          return `<span class="inline-block bg-[#f3e8ff] text-[#7e22ce] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1 border border-[#e9d5ff]">สัปดาห์ละครั้ง</span>`;
         if (freq === "รายเดือน")
-          return `<span class="inline-block bg-[#ffedd5] text-[#a16207] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1">เดือนละครั้ง</span>`;
+          return `<span class="inline-block bg-[#ffedd5] text-[#a16207] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1 border border-[#fed7aa]">เดือนละครั้ง</span>`;
         if (freq === "วันเว้นวัน")
-          return `<span class="inline-block bg-[#e0f2fe] text-[#0f766e] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1">วันเว้นวัน</span>`;
-        return `<span class="inline-block bg-[#f5f5f4] text-[#78716c] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1">ทุกวัน</span>`;
+          return `<span class="inline-block bg-[#e0f2fe] text-[#0f766e] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1 border border-[#bae6fd]">วันเว้นวัน</span>`;
+        return `<span class="inline-block bg-[#f5f5f4] text-[#78716c] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1 border border-[#e7e5e4]">ทุกวัน</span>`;
       }
 
       function switchTab(tabName) {
@@ -628,25 +718,16 @@
             '<div class="text-center text-[#4B2A1D]/40 py-10">กำลังซิงค์...</div>';
         }
         try {
-          const res = await fetch(
-            `${API_URL}?action=getDashboard&branch=${encodeURIComponent(userState.branch)}`,
-          );
+          const url = `${API_URL}?action=getDashboard&branch=${encodeURIComponent(userState.branch)}`;
+          const res = await fetch(url);
           const data = await res.json();
 
-          // อัปเดต Top Cleaners
           const topListEl = document.getElementById("top-cleaners-list");
           if (data.topCleaners && data.topCleaners.length > 0) {
             let topHtml = "";
             const medals = ["🥇", "🥈", "🥉"];
             data.topCleaners.forEach((cleaner, index) => {
-              topHtml += `
-                            <div class="flex justify-between items-center bg-white/70 p-2.5 rounded-2xl backdrop-blur-md border border-white/80 shadow-sm">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xl drop-shadow-sm">${medals[index] || "🏅"}</span>
-                                    <span class="font-bold text-[#4B2A1D] text-sm truncate max-w-[120px]">${cleaner.name}</span>
-                                </div>
-                                <span class="text-xs font-bold gimbocha-primary-text bg-white px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">${cleaner.score.toLocaleString()} pts</span>
-                            </div>`;
+              topHtml += `<div class="flex justify-between items-center bg-white/70 p-2.5 rounded-2xl backdrop-blur-md border border-white/80 shadow-sm"><div class="flex items-center gap-2"><span class="text-xl drop-shadow-sm">${medals[index] || "🏅"}</span><span class="font-bold text-[#4B2A1D] text-sm truncate max-w-[120px]">${cleaner.name}</span></div><span class="text-xs font-bold gimbocha-primary-text bg-white px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">${cleaner.score.toLocaleString()} pts</span></div>`;
             });
             topListEl.innerHTML = topHtml;
           } else {
@@ -654,13 +735,11 @@
               '<div class="text-sm text-[#b45309] p-2 text-center bg-white/40 rounded-xl">ยังไม่มีข้อมูลในเดือนนี้</div>';
           }
 
-          // อัปเดตประสิทธิภาพ และ สถิติย้อนหลัง (ป้องกัน Error ถ้ายังไม่อัปเดต Apps Script)
           const hist = data.history || {
             current: { pts: 0, max: 0, pct: 0 },
             last1: { pct: 0 },
             last2: { pct: 0 },
           };
-
           document.getElementById("cov-done").innerText =
             hist.current.pts.toLocaleString();
           document.getElementById("cov-total").innerText =
@@ -669,12 +748,10 @@
             hist.current.pct + "%";
           document.getElementById("cov-bar").style.width =
             hist.current.pct + "%";
-
           document.getElementById("stat-last1").innerText =
             hist.last1.pct + "%";
           document.getElementById("stat-last2").innerText =
             hist.last2.pct + "%";
-
           if (hist.current.pct > hist.last1.pct) {
             document.getElementById("stat-last1").innerHTML +=
               ' <span class="text-emerald-300">↑</span>';
@@ -683,33 +760,51 @@
               ' <span class="text-red-300">↓</span>';
           }
 
-          // อัปเดตคะแนนรวมสาขา
-          document.getElementById("score-k1").innerText = (
-            data.branchScores["เกษมสันต์ 1"] || 0
-          ).toLocaleString();
-          document.getElementById("score-sc").innerText = (
-            data.branchScores["เสาชิงช้า"] || 0
-          ).toLocaleString();
+          // 🌟 อัปเดต: เปลี่ยนเป็นดึงเปอร์เซ็นต์มาโชว์ใน ศึกความสะอาด
+          const battlePct = data.battlePercentages || {
+            "เกษมสันต์ 1": 0,
+            เสาชิงช้า: 0,
+          };
+          document.getElementById("score-k1").innerText =
+            battlePct["เกษมสันต์ 1"] + "%";
+          document.getElementById("score-sc").innerText =
+            battlePct["เสาชิงช้า"] + "%";
 
-          // อัปเดตโซน
-          const zones = data.zoneStats || {};
-          let maxZoneScore = Math.max(...Object.values(zones));
-          if (maxZoneScore === 0) maxZoneScore = 1;
+          // 🌟 โซนสุขภาพแสดง Emoji และเปอร์เซ็นต์
+          const zones = data.zoneHealth || {};
           const zoneContainer = document.getElementById("zone-stats-container");
           let newZoneHTML = "";
-          const zoneColors = {
-            หน้าร้าน: "bg-[#eab308]",
-            บาร์: "bg-[#df8b99]",
-            ครัว: "bg-[#2a6f78]",
-            หลังร้านและโรงรถ: "bg-[#a8a29e]",
-            ที่นั่งบริการลูกค้า: "bg-[#d946ef]",
-          };
-          for (const [zoneName, score] of Object.entries(zones)) {
-            let percent = (score / maxZoneScore) * 100;
-            let colorClass = zoneColors[zoneName] || "bg-[#d6cabc]";
-            newZoneHTML += `<div class="mb-3"><div class="flex justify-between text-xs mb-1.5"><span class="font-bold text-[#4B2A1D]/80">${zoneName}</span><span class="text-[#4B2A1D]/50 font-bold">${score} pts</span></div><div class="w-full bg-[#f4f1eb] rounded-full h-2.5 overflow-hidden border border-[#eae1d3]"><div class="zone-bar ${colorClass} h-full rounded-full" style="width: ${percent}%"></div></div></div>`;
+
+          for (const [zName, stat] of Object.entries(zones)) {
+            if (stat.total === 0) continue; // ถ้าไม่มีงานในโซนนี้ให้ข้าม
+
+            let pct = Math.round((stat.done / stat.total) * 100);
+            let emoji = "😠";
+            let colorClass = "bg-[#f43f5e]"; // แดง
+
+            if (pct >= 80) {
+              emoji = "😊";
+              colorClass = "bg-[#10b981]";
+            } // เขียว
+            else if (pct >= 50) {
+              emoji = "😐";
+              colorClass = "bg-[#f59e0b]";
+            } // เหลือง/ส้ม
+
+            newZoneHTML += `
+                        <div class="mb-4">
+                            <div class="flex justify-between items-end text-xs mb-1.5">
+                                <span class="font-bold text-[#4B2A1D]/80 flex items-center gap-1.5"><span class="text-base">${emoji}</span> ${zName}</span>
+                                <span class="text-[#4B2A1D]/50 font-bold bg-[#fdfbf7] border border-[#f0e6d2] px-2 py-0.5 rounded-lg">${stat.done}/${stat.total} จุด</span>
+                            </div>
+                            <div class="w-full bg-[#f4f1eb] rounded-full h-3 overflow-hidden border border-[#eae1d3] shadow-inner">
+                                <div class="zone-bar ${colorClass} h-full rounded-full transition-all duration-1000" style="width: ${pct}%"></div>
+                            </div>
+                        </div>`;
           }
-          zoneContainer.innerHTML = newZoneHTML;
+          zoneContainer.innerHTML =
+            newZoneHTML ||
+            '<div class="text-center text-xs text-[#4B2A1D]/40">ไม่มีงานในสาขานี้</div>';
 
           currentTasks = data.tasks || [];
           renderTaskTabs();
@@ -723,6 +818,7 @@
           if (!isSilent)
             document.getElementById("tab-todo").innerHTML =
               '<div class="text-center text-[#df8b99] py-4 font-bold">โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชอีกครั้งนะคะ</div>';
+          console.error(error);
         }
       }
 
@@ -748,7 +844,6 @@
         document.getElementById("count-todo").innerText = countTodo;
         document.getElementById("count-done").innerText = countDone;
 
-        // Render TODO
         let htmlTodo = "";
         if (countTodo === 0) {
           htmlTodo = `<div class="text-center py-12 bg-[#df8b99]/10 rounded-3xl border border-[#df8b99]/20 mb-6"><div class="text-5xl mb-3 drop-shadow-sm">🌸</div><h4 class="font-bold text-[#df8b99] text-xl">ไม่มีงานค้างแล้ว!</h4><p class="text-[#df8b99]/70 text-sm mt-1">สาขา ${userState.branch} สะอาดเอี่ยมอ่อง</p></div>`;
@@ -780,7 +875,6 @@
         }
         elTodo.innerHTML = htmlTodo;
 
-        // Render DONE
         let htmlDone = "";
         if (countDone === 0) {
           htmlDone =
@@ -788,16 +882,20 @@
         } else {
           completedTasks.reverse().forEach((task) => {
             let freqBadge = getFrequencyBadge(task.frequency);
+            let verifierText = task.verifier
+              ? ` <span class="opacity-75">(ตรวจโดย ${task.verifier})</span>`
+              : "";
+
             htmlDone += `
                         <div class="task-done p-4 rounded-3xl border flex justify-between items-center mb-3">
-                            <div class="pr-3">
+                            <div class="pr-3 w-[85%]">
                                 <h4 class="text-[15px] font-bold text-[#4B2A1D]/50 leading-snug mb-1.5 line-through decoration-[#4B2A1D]/20">${task.name}</h4>
                                 <div class="flex items-center flex-wrap gap-1 mt-1 opacity-70">
                                     <span class="inline-block bg-[#e5dfd3] text-[#4B2A1D]/70 text-[10px] font-bold px-2.5 py-0.5 rounded-full">${task.points} pts</span>
                                     ${freqBadge}
                                 </div>
                                 <div class="mt-2">
-                                    <span class="text-[11px] font-bold gimbocha-secondary-text bg-[#2a6f78]/10 px-2.5 py-1 rounded-xl">✓ ${task.completedBy} (${task.completedTime} น.)</span>
+                                    <span class="text-[11px] font-bold gimbocha-secondary-text bg-[#2a6f78]/10 px-2.5 py-1 rounded-xl block truncate">✓ ทำโดย ${task.completedBy}${verifierText} (${task.completedTime} น.)</span>
                                 </div>
                             </div>
                             <div class="shrink-0 text-[#2a6f78]/30 font-bold h-10 w-10 flex items-center justify-center"><span class="text-2xl">✅</span></div>
@@ -816,42 +914,108 @@
         btn.disabled = false;
       }
 
-      // 🌟 ฟังก์ชันส่งงานแบบ Full-Screen Loader
-      async function startTaskProgress(taskId, taskName, points, zone) {
-        const loader = document.getElementById("global-loader");
-        loader.classList.remove("hidden");
-        loader.classList.add("flex");
+      // 🌟 1. ฟังก์ชันเปิดหน้าต่างรหัสลับ
+      function startTaskProgress(taskId, taskName, points, zone) {
+        pendingTaskData = { taskId, taskName, points, zone };
+        const taskLabel = document.getElementById("verify-task-name");
+        const inputCode = document.getElementById("verifier-code");
+        const modal = document.getElementById("verify-modal");
 
+        if (taskLabel) taskLabel.innerText = taskName;
+        if (inputCode) inputCode.value = "";
+
+        if (modal) {
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+        }
+      }
+
+      // 🌟 2. ฟังก์ชันปิดหน้าต่าง (ลบตัวเคลียร์ข้อมูลออก ป้องกันบัคจอค้าง)
+      function closeVerifyModal() {
+        const modal = document.getElementById("verify-modal");
+        if (modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+        // ❌ ห้ามล้าง pendingTaskData ตรงนี้เด็ดขาด
+      }
+
+      // 🌟 3. ฟังก์ชันยืนยันและส่งข้อมูล (เพิ่มความทนทาน)
+      async function confirmTaskProgress() {
+        const inputCode = document.getElementById("verifier-code").value.trim();
+        const loader = document.getElementById("global-loader");
+
+        if (!inputCode) {
+          alert("กรุณาใส่รหัสลับด้วยนะคะ!");
+          return;
+        }
+
+        const verifierName = VERIFIER_CODES[inputCode];
+        if (!verifierName) {
+          alert("รหัสลับไม่ถูกต้อง! รบกวนลองใหม่อีกครั้งค่ะ");
+          document.getElementById("verifier-code").value = "";
+          return;
+        }
+
+        // เตรียม Payload ข้อมูลก่อนล้างค่า
         const payload = {
           action: "completeTask",
           phone: userState.phone,
           name: userState.name,
           branch: userState.branch,
-          taskId: taskId,
-          taskName: taskName,
-          points: points,
-          zone: zone,
+          taskId: pendingTaskData.taskId,
+          taskName: pendingTaskData.taskName,
+          points: pendingTaskData.points,
+          zone: pendingTaskData.zone,
+          verifierName: verifierName,
         };
 
-        try {
-          const res = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(payload),
-          });
-          const result = await res.json();
+        // ปิด Modal
+        closeVerifyModal();
 
-          if (result.status === "error") {
-            alert(result.message);
-          } else {
-            createGlobalConfetti();
+        // แสดง Loader และล็อคจอ
+        if (loader) {
+          loader.querySelector("#loader-text").innerText =
+            "✨ กำลังบันทึกข้อมูล...";
+          loader.classList.remove("hidden");
+          loader.classList.add("flex");
+        }
+
+        // ตั้งระบบ Timeout กันเหนียว 10 วินาที
+        const safetyTimeout = setTimeout(() => {
+          if (loader && !loader.classList.contains("hidden")) {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+            alert(
+              "การเชื่อมต่อล่าช้า ข้อมูลอาจจะบันทึกไม่สำเร็จ รบกวนรีเฟรชหน้าจอเช็คอีกครั้งนะคะ",
+            );
           }
+        }, 10000);
 
-          await loadDashboardData(true);
+        try {
+          // ส่งข้อมูลไปหลังบ้าน
+          const result = await fetchAPI(payload);
+          clearTimeout(safetyTimeout); // บันทึกสำเร็จ ยกเลิกตัวจับเวลา Timeout
+
+          if (result && result.status === "success") {
+            if (typeof createGlobalConfetti === "function")
+              createGlobalConfetti();
+            await loadDashboardData(true);
+          } else {
+            alert(result.message || "บันทึกไม่สำเร็จ ลองใหม่อีกครั้งนะคะ");
+          }
         } catch (error) {
-          alert("ระบบเชื่อมต่อขัดข้อง โปรดลองใหม่อีกครั้งค่ะ");
+          console.error("Error saving task:", error);
+          alert(
+            "การเชื่อมต่อมีปัญหา แต่ข้อมูลอาจจะบันทึกไปแล้ว รบกวนรีเฟรชหน้าจอเช็คดูนะคะ",
+          );
         } finally {
-          loader.classList.add("hidden");
-          loader.classList.remove("flex");
+          // ✅ ไม่ว่าจะสำเร็จหรือพัง ต้องปิดหน้าจอโหลดเสมอ ป้องกันการค้าง
+          if (loader) {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+          }
+          pendingTaskData = null;
         }
       }
 
@@ -894,11 +1058,16 @@
         }
 
         currentTasks.forEach((task) => {
+          let brBadge =
+            task.taskBranch === "ทุกสาขา"
+              ? `<span class="text-[#2a6f78] bg-[#2a6f78]/10 px-1.5 py-0.5 rounded">📍ทุกสาขา</span>`
+              : `<span class="text-[#df8b99] bg-[#df8b99]/10 px-1.5 py-0.5 rounded">${task.taskBranch}</span>`;
+
           listEl.innerHTML += `
                     <div class="p-4 border-2 border-[#f0e6d2] rounded-2xl flex justify-between items-center bg-white mb-2 shadow-sm">
                         <div class="w-[70%]">
                             <p class="font-bold text-[#4B2A1D] text-[15px] leading-snug mb-1">${task.name}</p>
-                            <p class="text-xs text-[#4B2A1D]/50 font-bold">${task.id} • ${task.zone} • ${task.points} pts • ${task.frequency}</p>
+                            <p class="text-xs text-[#4B2A1D]/50 font-bold">${brBadge} • ${task.zone} • ${task.points} pts • ${task.frequency}</p>
                         </div>
                         <div class="flex gap-2 flex-col">
                             <button onclick="prepareEditTask('${task.id}')" class="text-xs bg-[#2a6f78]/10 text-[#2a6f78] px-3 py-1.5 rounded-xl font-bold hover:bg-[#2a6f78]/20 transition">แก้ไข</button>
@@ -919,6 +1088,7 @@
         document.getElementById("add-task-points").value = task.points;
         document.getElementById("add-task-freq").value = task.frequency;
         document.getElementById("add-task-zone").value = task.zone;
+        document.getElementById("add-task-branch").value = task.taskBranch;
 
         document.getElementById("btn-add-task").innerText = "บันทึกการแก้ไข";
         document.getElementById("btn-cancel-edit").classList.remove("hidden");
@@ -933,6 +1103,7 @@
         document.getElementById("add-task-points").value = "10";
         document.getElementById("add-task-freq").value = "รายวัน";
         document.getElementById("add-task-zone").value = "หน้าร้าน";
+        document.getElementById("add-task-branch").value = "ทุกสาขา";
         document.getElementById("btn-add-task").innerText = "บันทึกงานใหม่";
         document.getElementById("btn-cancel-edit").classList.add("hidden");
       }
@@ -942,6 +1113,7 @@
         const points = document.getElementById("add-task-points").value;
         const freq = document.getElementById("add-task-freq").value;
         const zone = document.getElementById("add-task-zone").value;
+        const tBranch = document.getElementById("add-task-branch").value;
         const msgEl = document.getElementById("admin-msg");
         const btn = document.getElementById("btn-add-task");
 
@@ -962,22 +1134,23 @@
           points: points,
           frequency: freq,
           zone: zone,
+          taskBranch: tBranch,
         };
 
         try {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(payload),
-          });
+          const result = await fetchAPI(payload);
+          if (result.status === "error") throw new Error(result.message);
+
           msgEl.innerText = "✅ บันทึกสำเร็จ!";
           msgEl.className =
             "text-center text-sm font-bold mt-2 text-[#2a6f78] block";
           cancelEditMode();
           await loadDashboardData(true);
         } catch (e) {
-          msgEl.innerText = "❌ เกิดข้อผิดพลาด";
+          msgEl.innerText = "❌ เกิดข้อผิดพลาด: " + (e.message || "");
           msgEl.className =
             "text-center text-sm font-bold mt-2 text-red-500 block";
+          console.error(e);
         } finally {
           btn.disabled = false;
           btn.innerHTML = editingTaskId ? "บันทึกการแก้ไข" : "บันทึกงานใหม่";
@@ -997,15 +1170,13 @@
         try {
           document.getElementById("admin-task-list").innerHTML =
             '<div class="text-center text-[#4B2A1D]/40 py-4">⏳ กำลังลบข้อมูล...</div>';
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "deleteTask", taskId: taskId }),
-          });
+          await fetchAPI({ action: "deleteTask", taskId: taskId });
           if (editingTaskId === taskId) cancelEditMode();
           await loadDashboardData(true);
         } catch (e) {
           alert("เกิดข้อผิดพลาดในการลบข้อมูลค่ะ");
           renderAdminTaskList();
+          console.error(e);
         }
       }
     </script>
