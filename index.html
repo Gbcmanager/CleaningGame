@@ -11,29 +11,19 @@
         font-family: "Mali", sans-serif;
         background-color: #fdfbf7;
         color: #4b2a1d;
+        transition: padding-bottom 0.3s;
       }
-
       .gimbocha-primary {
         background-color: #df8b99;
       }
-      .gimbocha-primary-text {
-        color: #df8b99;
-      }
       .gimbocha-secondary {
         background-color: #2a6f78;
-      }
-      .gimbocha-secondary-text {
-        color: #2a6f78;
-      }
-      .gimbocha-gold {
-        color: #eab308;
       }
       .gimbocha-card {
         background-color: #ffffff;
         border: 1px solid #f0e6d2;
         box-shadow: 0 4px 6px -1px rgba(75, 42, 29, 0.05);
       }
-
       .zone-bar {
         transition: width 0.8s ease-out;
       }
@@ -62,23 +52,11 @@
         -webkit-appearance: none;
         margin: 0;
       }
-
       .task-done {
         background-color: #faf8f5;
         border-color: #eae1d3;
         opacity: 0.8;
       }
-      .progress-bg {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 0%;
-        background-color: #f2eef0;
-        transition: width 1.2s linear;
-        z-index: 0;
-      }
-
       .tab-content {
         display: none;
         animation: fadeIn 0.3s ease-in-out;
@@ -96,12 +74,26 @@
           transform: translateY(0);
         }
       }
+
+      /* แอนิเมชันสำหรับข้อความวิ่ง */
+      @keyframes marquee {
+        0% {
+          transform: translateX(100vw);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+      .animate-marquee {
+        display: inline-block;
+        animation: marquee 15s linear infinite;
+      }
     </style>
   </head>
-  <body class="antialiased pb-10">
+  <body class="antialiased pb-10 relative min-h-screen">
     <div
       id="global-loader"
-      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-white transition-opacity duration-300"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[150] hidden flex-col items-center justify-center text-white"
     >
       <div class="text-6xl animate-bounce mb-4 text-[#df8b99]">✨</div>
       <p
@@ -116,42 +108,153 @@
     </div>
 
     <div
-      id="verify-modal"
-      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[90] hidden flex-col items-center justify-center p-4 transition-opacity duration-200"
+      id="promo-footer"
+      class="fixed bottom-0 left-0 w-full bg-gradient-to-r from-[#ef4444] to-[#f59e0b] text-white py-3 shadow-[0_-4px_15px_rgba(0,0,0,0.2)] z-[80] hidden overflow-hidden border-t-2 border-[#fef08a]"
     >
       <div
-        class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm animate-[fadeIn_0.2s_ease-out] relative"
-      >
-        <div class="text-center mb-5">
-          <div class="text-5xl mb-2 drop-shadow-sm">🔐</div>
-          <h3 class="text-xl font-bold text-[#4B2A1D] leading-tight">
-            ยืนยันความสะอาด<br />โดยพนักงานประจำ
-          </h3>
-          <p
-            class="text-sm font-bold text-[#df8b99] mt-3 mb-4 p-2 bg-[#df8b99]/10 rounded-xl"
-            id="verify-task-name"
-          >
-            ชื่องาน
+        id="footer-marquee-text"
+        class="whitespace-nowrap animate-marquee font-bold text-sm tracking-wide"
+      ></div>
+    </div>
+
+    <div
+      id="rules-modal"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4"
+    >
+      <div class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm relative">
+        <button
+          onclick="closeRulesModal()"
+          class="absolute top-4 right-4 text-2xl opacity-50 hover:opacity-100"
+        >
+          ✖
+        </button>
+        <div class="text-center mb-4">
+          <span class="text-4xl">📜</span>
+          <h3 class="text-xl font-bold mt-2">กติกาล่าแต้ม Gimbocha</h3>
+        </div>
+        <div
+          class="space-y-3 text-sm text-[#4B2A1D]/80 h-64 overflow-y-auto pr-2 leading-relaxed"
+        >
+          <p>
+            <b>1. ระบบยศ (Rank)</b
+            ><br />ทำภารกิจสะสมแต้มอัปเกรดยศตัวเองทุกเดือน:<br />🥉 0-150 pts:
+            ลูกสมุนยาย<br />🥈 151-400 pts: หลานรักหน้าใส<br />🥇 401-800 pts:
+            มือขวาอาซิ่ม<br />💎 800+ pts: ทายาทตระกูลสะอาด
+          </p>
+          <div class="bg-[#fef08a]/50 p-2 rounded-xl">
+            <p>
+              <b>2. 🔥 นาทีทองคูณแต้ม</b
+              ><br />รีบเคลียร์งานเสร็จก่อนเวลาที่กำหนด รับคะแนนโบนัสไปเลย!
+              (สังเกตแถบวิ่งด้านล่างจอ)
+            </p>
+          </div>
+          <p>
+            <b>3. การตรวจงาน</b
+            ><br />ทำเสร็จแล้วอย่าลืมให้พนักงานประจำมาตรวจและใส่รหัสลับยืนยันนะจ๊ะ
           </p>
         </div>
+        <button
+          onclick="closeRulesModal()"
+          class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl mt-5 shadow-md"
+        >
+          เข้าใจแล้ว ลุย!
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="primetime-modal"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[105] hidden flex-col items-center justify-center p-4"
+    >
+      <div
+        class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm text-center relative bg-gradient-to-br from-white to-[#fef08a]/30 border-2 border-[#eab308]"
+      >
+        <div class="text-6xl mb-2 animate-bounce">🔥</div>
+        <h3 class="text-2xl font-bold text-[#b45309] leading-tight mb-3">
+          ถึงเวลาโกยแต้ม!
+        </h3>
+        <p id="promo-text-display" class="text-[#b45309] font-bold px-2"></p>
+        <button
+          onclick="closePrimeTimeModal()"
+          class="w-full bg-[#eab308] text-white font-bold p-4 rounded-2xl hover:opacity-90 shadow-md mt-5"
+        >
+          รับทราบ ลุยเลย!
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="verify-modal"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[90] hidden flex-col items-center justify-center p-4"
+    >
+      <div
+        class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm animate-[fadeIn_0.2s_ease-out] text-center relative"
+      >
+        <div class="text-5xl mb-2 drop-shadow-sm">🔐</div>
+        <h3 class="text-xl font-bold text-[#4B2A1D] leading-tight">
+          ยืนยันความสะอาด<br />โดยพนักงานประจำ
+        </h3>
+        <p
+          class="text-sm font-bold text-[#df8b99] mt-3 mb-4 p-2 bg-[#df8b99]/10 rounded-xl"
+          id="verify-task-name"
+        >
+          ชื่องาน
+        </p>
         <input
           type="password"
           id="verifier-code"
           placeholder="ใส่รหัสลับ (PIN)"
-          class="w-full text-center text-3xl tracking-[0.3em] p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+          class="w-full text-center text-3xl tracking-[0.3em] p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 outline-none focus:border-[#2a6f78]"
         />
         <div class="flex gap-2">
           <button
             onclick="closeVerifyModal()"
-            class="w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl hover:bg-[#e0d6c2] transition"
+            class="w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl"
           >
             ยกเลิก
           </button>
           <button
             onclick="confirmTaskProgress()"
-            class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl hover:opacity-90 transition shadow-md"
+            class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl shadow-md"
           >
             ยืนยันรหัส!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="admin-auth-modal"
+      class="fixed inset-0 bg-[#4B2A1D]/80 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4"
+    >
+      <div
+        class="gimbocha-card p-6 rounded-[2rem] w-full max-w-sm animate-[fadeIn_0.2s_ease-out] text-center relative"
+      >
+        <div class="text-5xl mb-2 drop-shadow-sm">⚙️</div>
+        <h3 class="text-xl font-bold text-[#4B2A1D] leading-tight mb-1">
+          จัดการระบบ
+        </h3>
+        <p class="text-xs font-bold text-[#df8b99] mb-4">
+          เฉพาะผู้จัดการ/พนักงานประจำเท่านั้น
+        </p>
+        <input
+          type="password"
+          id="admin-pin-code"
+          placeholder="PIN CODE"
+          class="w-full text-center text-3xl tracking-[0.3em] p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 outline-none focus:border-[#eab308]"
+        />
+        <div class="flex gap-2">
+          <button
+            onclick="closeAdminAuthModal()"
+            class="w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl"
+          >
+            ยกเลิก
+          </button>
+          <button
+            onclick="verifyAdminPin()"
+            class="w-full bg-[#eab308] text-white font-bold p-4 rounded-2xl shadow-md"
+          >
+            เข้าสู่ระบบหลังบ้าน
           </button>
         </div>
       </div>
@@ -167,38 +270,37 @@
         <span class="text-5xl">🍵</span>
       </div>
       <div class="gimbocha-card p-8 rounded-[2rem] w-full max-w-sm">
-        <h1 class="text-3xl font-bold text-center mb-2 gimbocha-secondary-text">
+        <h1 class="text-3xl font-bold text-center mb-2 text-[#2a6f78]">
           เข้าสู่ระบบ
         </h1>
         <div
-          class="bg-[#2a6f78]/10 text-[#2a6f78] text-xs p-3 rounded-2xl mb-6 border border-[#2a6f78]/20 text-center"
+          class="bg-[#2a6f78]/10 text-[#2a6f78] text-xs p-3 rounded-2xl mb-6 text-center"
         >
-          <b>เข้าครั้งแรก:</b> กรอกเบอร์ + ชื่อเล่น<br />
-          <b>เข้าครั้งต่อไป:</b> ใส่แค่เบอร์ระบบจะจำชื่อได้<br />
-          <span class="opacity-70">*(ใส่ชื่อใหม่เพื่อเปลี่ยนชื่อได้เลย)*</span>
+          <b>เข้าครั้งแรก:</b> กรอกเบอร์ + ชื่อเล่น<br /><b>เข้าครั้งต่อไป:</b>
+          ใส่แค่เบอร์ระบบจะจำชื่อได้
         </div>
         <input
           type="tel"
           id="login-phone"
           placeholder="เบอร์โทรศัพท์"
-          class="w-full text-center text-2xl p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 focus:border-[#df8b99] outline-none bg-[#fdfbf7] transition text-[#4B2A1D]"
+          class="w-full text-center text-2xl p-4 border-2 border-[#f0e6d2] rounded-2xl mb-4 outline-none focus:border-[#df8b99]"
         />
         <input
           type="text"
           id="login-name"
           placeholder="ชื่อเล่น"
-          class="w-full text-center text-lg p-3 border-2 border-[#f0e6d2] rounded-2xl mb-4 focus:border-[#df8b99] outline-none bg-[#fdfbf7] transition text-[#4B2A1D]"
+          class="w-full text-center text-lg p-3 border-2 border-[#f0e6d2] rounded-2xl mb-4 outline-none focus:border-[#df8b99]"
         />
         <button
           onclick="handleLogin()"
           id="login-btn"
-          class="w-full gimbocha-primary text-white text-xl font-bold p-4 rounded-2xl hover:opacity-90 transition shadow-md"
+          class="w-full gimbocha-primary text-white text-xl font-bold p-4 rounded-2xl shadow-md"
         >
           เริ่มงานเลย!
         </button>
         <p
           id="auth-error"
-          class="text-red-500 text-sm font-bold text-center mt-4 hidden bg-red-50 p-2 rounded-xl"
+          class="text-red-500 text-sm font-bold text-center mt-4 hidden"
         ></p>
       </div>
     </div>
@@ -209,27 +311,26 @@
     >
       <div class="gimbocha-card p-8 rounded-[2rem] w-full max-w-sm text-center">
         <h2 class="text-2xl font-bold text-[#4B2A1D] mb-2">
-          👋 สวัสดี
-          <span id="welcome-name" class="gimbocha-primary-text"></span>
+          👋 สวัสดี <span id="welcome-name" class="text-[#df8b99]"></span>
         </h2>
         <p class="text-[#4B2A1D]/60 mb-8 font-medium">
           วันนี้เข้ากะที่สาขาไหนเอ่ย?
         </p>
         <button
           onclick="selectBranch('เกษมสันต์ 1')"
-          class="w-full bg-[#2a6f78]/10 text-[#2a6f78] border-2 border-[#2a6f78]/20 text-xl font-bold p-5 rounded-2xl mb-4 hover:bg-[#2a6f78]/20 transition flex items-center justify-center gap-2"
+          class="w-full bg-[#2a6f78]/10 text-[#2a6f78] border-2 border-[#2a6f78]/20 text-xl font-bold p-5 rounded-2xl mb-4"
         >
           📍 เกษมสันต์ 1
         </button>
         <button
           onclick="selectBranch('เสาชิงช้า')"
-          class="w-full bg-[#df8b99]/10 text-[#df8b99] border-2 border-[#df8b99]/20 text-xl font-bold p-5 rounded-2xl hover:bg-[#df8b99]/20 transition flex items-center justify-center gap-2"
+          class="w-full bg-[#df8b99]/10 text-[#df8b99] border-2 border-[#df8b99]/20 text-xl font-bold p-5 rounded-2xl"
         >
           📍 เสาชิงช้า
         </button>
         <button
           onclick="handleLogout()"
-          class="mt-8 text-[#4B2A1D]/40 text-sm underline hover:text-[#4B2A1D] transition"
+          class="mt-8 text-[#4B2A1D]/40 text-sm underline"
         >
           ออกจากระบบ
         </button>
@@ -240,26 +341,54 @@
       <header
         class="bg-white p-5 shadow-sm sticky top-0 z-20 border-b border-[#f0e6d2]"
       >
-        <div class="flex justify-between items-center max-w-3xl mx-auto">
-          <div>
-            <h2 class="text-xl font-bold text-[#4B2A1D]">
+        <div class="flex justify-between items-start max-w-3xl mx-auto">
+          <div class="w-2/3">
+            <h2 class="text-xl font-bold text-[#4B2A1D] truncate">
               <span id="dash-name"></span>
             </h2>
-            <p class="text-sm font-bold gimbocha-primary-text">
-              กำลังลุยงานที่: <span id="dash-branch"></span>
-            </p>
+            <div class="mt-1 flex items-center gap-2">
+              <p
+                class="text-[11px] font-bold text-[#df8b99] bg-[#df8b99]/10 px-2 py-0.5 rounded-lg border border-[#df8b99]/20"
+              >
+                📍 <span id="dash-branch"></span> |
+                <span id="dash-rank-icon"></span>
+                <span id="dash-rank-name"></span>
+              </p>
+              <button
+                onclick="showRulesModal()"
+                class="text-[10px] bg-[#eab308]/20 text-[#b45309] px-2 py-0.5 rounded-lg font-bold border border-[#eab308]/30"
+              >
+                📜 กติกา
+              </button>
+            </div>
+            <div class="mt-3">
+              <div
+                class="flex justify-between text-[9px] font-bold text-[#4B2A1D]/60 mb-0.5 px-1"
+              >
+                <span id="rank-current-score">0 pts</span>
+                <span id="rank-next-score">Next Rank: 150 pts</span>
+              </div>
+              <div
+                class="w-full bg-[#f0e6d2] rounded-full h-1.5 overflow-hidden shadow-inner"
+              >
+                <div
+                  id="rank-progress-bar"
+                  class="bg-gradient-to-r from-[#df8b99] to-[#eab308] h-full rounded-full transition-all duration-1000"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-col items-end">
             <button
-              onclick="showScreen('admin')"
-              class="text-lg bg-[#fdfbf7] p-2 rounded-full hover:bg-[#f0e6d2] transition border border-[#f0e6d2]"
-              title="จัดการงาน (ผู้จัดการ)"
+              onclick="promptAdminPin()"
+              class="text-lg bg-[#fdfbf7] p-2 rounded-full border border-[#f0e6d2]"
             >
               ⚙️
             </button>
             <button
               onclick="changeBranch()"
-              class="text-xs font-bold text-[#4B2A1D]/60 bg-[#fdfbf7] px-4 py-2 rounded-full border border-[#f0e6d2] hover:bg-[#f0e6d2] transition"
+              class="text-[10px] font-bold text-[#4B2A1D]/60 bg-[#fdfbf7] px-3 py-1.5 rounded-full border border-[#f0e6d2]"
             >
               เปลี่ยนสาขา
             </button>
@@ -267,7 +396,7 @@
         </div>
       </header>
 
-      <main class="p-4 max-w-3xl mx-auto space-y-5 mt-4">
+      <main class="p-4 max-w-3xl mx-auto space-y-5 mt-2">
         <div
           class="bg-gradient-to-br from-[#fff7ed] to-[#fef08a]/30 p-5 rounded-[2rem] border border-[#fde047]/50 shadow-sm relative overflow-hidden"
         >
@@ -285,57 +414,54 @@
         </div>
 
         <section
-          class="bg-[#2a6f78] text-white p-6 rounded-[2rem] shadow-sm relative overflow-hidden mt-6"
+          class="bg-[#2a6f78] text-white p-6 rounded-[2rem] shadow-sm relative mt-6"
         >
-          <div class="relative z-10">
-            <div class="flex justify-between items-start mb-1">
-              <h3 class="text-sm font-bold text-[#ccfbf1]">
-                🎯 ประสิทธิภาพสาขา (เดือนนี้)
-              </h3>
+          <div class="flex justify-between items-start mb-1">
+            <h3 class="text-sm font-bold text-[#ccfbf1]">
+              🎯 ประสิทธิภาพสาขา (เดือนนี้)
+            </h3>
+          </div>
+          <div class="flex justify-between items-end mt-4 mb-2">
+            <div>
+              <p class="text-[10px] text-[#5eead4] mb-0.5">
+                คะแนนที่ทำได้ / คะแนนเต็ม (MAX)
+              </p>
+              <span class="font-bold text-white text-sm"
+                ><span id="cov-done" class="text-lg">0</span> /
+                <span id="cov-total">0</span> pts</span
+              >
             </div>
-            <div class="flex justify-between items-end mt-4 mb-2">
-              <div>
-                <p class="text-[10px] text-[#5eead4] mb-0.5">
-                  คะแนนที่ทำได้ / คะแนนเต็ม (MAX)
-                </p>
-                <span class="font-bold text-white text-sm"
-                  ><span id="cov-done" class="text-lg">0</span> /
-                  <span id="cov-total">0</span> pts</span
-                >
-              </div>
+            <span
+              class="font-black text-[#fde047] text-2xl drop-shadow-md"
+              id="cov-percent"
+              >0%</span
+            >
+          </div>
+          <div
+            class="w-full bg-[#115e59] rounded-full h-4 overflow-hidden border border-[#0f766e] mb-4 shadow-inner"
+          >
+            <div
+              id="cov-bar"
+              class="bg-gradient-to-r from-[#eab308] to-[#fde047] h-full rounded-full transition-all duration-1000"
+              style="width: 0%"
+            ></div>
+          </div>
+          <div
+            class="flex items-center gap-2 pt-3 border-t border-[#115e59]/50"
+          >
+            <span class="text-[10px] font-bold text-[#99f6e4] uppercase"
+              >ย้อนหลัง:</span
+            >
+            <div class="flex gap-2">
               <span
-                class="font-black text-[#fde047] text-2xl drop-shadow-md"
-                id="cov-percent"
-                >0%</span
+                class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
+                >เดือนก่อน
+                <span id="stat-last1" class="text-white ml-1">0%</span></span
+              ><span
+                class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
+                >2 เดือนก่อน
+                <span id="stat-last2" class="text-white ml-1">0%</span></span
               >
-            </div>
-            <div
-              class="w-full bg-[#115e59] rounded-full h-4 overflow-hidden border border-[#0f766e] mb-4 shadow-inner"
-            >
-              <div
-                id="cov-bar"
-                class="bg-gradient-to-r from-[#eab308] to-[#fde047] h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(253,224,71,0.5)]"
-                style="width: 0%"
-              ></div>
-            </div>
-            <div
-              class="flex items-center gap-2 pt-3 border-t border-[#115e59]/50"
-            >
-              <span class="text-[10px] font-bold text-[#99f6e4] uppercase"
-                >ย้อนหลัง:</span
-              >
-              <div class="flex gap-2">
-                <span
-                  class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
-                  >เดือนที่แล้ว
-                  <span id="stat-last1" class="text-white ml-1">0%</span></span
-                >
-                <span
-                  class="bg-[#115e59] text-[#ccfbf1] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#0f766e]"
-                  >2 เดือนก่อน
-                  <span id="stat-last2" class="text-white ml-1">0%</span></span
-                >
-              </div>
             </div>
           </div>
         </section>
@@ -348,27 +474,18 @@
               🏆 ศึกความสะอาด
             </h3>
             <div class="flex justify-between items-end mb-2">
-              <span class="font-bold gimbocha-secondary-text text-sm"
-                >เกษมสันต์ 1</span
-              >
-              <span
-                id="score-k1"
-                class="font-bold gimbocha-secondary-text text-lg transition-all duration-500"
+              <span class="font-bold text-[#2a6f78] text-sm">เกษมสันต์ 1</span
+              ><span id="score-k1" class="font-bold text-[#2a6f78] text-lg"
                 >0%</span
               >
             </div>
             <div class="flex justify-between items-end mt-3 mb-1">
-              <span class="font-bold gimbocha-primary-text text-sm"
-                >เสาชิงช้า</span
-              >
-              <span
-                id="score-sc"
-                class="font-bold gimbocha-primary-text text-lg transition-all duration-500"
+              <span class="font-bold text-[#df8b99] text-sm">เสาชิงช้า</span
+              ><span id="score-sc" class="font-bold text-[#df8b99] text-lg"
                 >0%</span
               >
             </div>
           </section>
-
           <section class="gimbocha-card p-6 rounded-[2rem]">
             <h3
               class="text-sm font-bold text-[#4B2A1D]/50 mb-4 uppercase tracking-wider text-center"
@@ -388,37 +505,34 @@
             <h3 class="text-xl font-bold text-[#4B2A1D]">📌 กระดานงาน</h3>
             <button
               onclick="silentRefresh(this)"
-              class="text-xs gimbocha-secondary-text bg-[#2a6f78]/10 px-4 py-2 rounded-full font-bold flex items-center gap-1 active:scale-95 transition hover:bg-[#2a6f78]/20"
+              class="text-xs text-[#2a6f78] bg-[#2a6f78]/10 px-4 py-2 rounded-full font-bold flex items-center gap-1"
             >
               🔄 อัปเดตล่าสุด
             </button>
           </div>
-
           <div class="flex bg-[#eae5d9] p-1.5 rounded-2xl mb-5">
             <button
               id="tab-btn-todo"
               onclick="switchTab('todo')"
-              class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all bg-white text-[#4B2A1D] shadow-sm"
+              class="w-1/2 py-3 text-sm font-bold rounded-xl bg-white text-[#4B2A1D] shadow-sm"
             >
               📝 ต้องทำ (<span id="count-todo">0</span>)
             </button>
             <button
               id="tab-btn-done"
               onclick="switchTab('done')"
-              class="w-1/2 py-3 text-sm font-bold rounded-xl transition-all text-[#4B2A1D]/50 hover:text-[#4B2A1D]"
+              class="w-1/2 py-3 text-sm font-bold rounded-xl text-[#4B2A1D]/50"
             >
               ✅ ทำแล้ว (<span id="count-done">0</span>)
             </button>
           </div>
-
           <div id="tab-todo" class="tab-content active space-y-3">
             <div
-              class="text-center text-[#4B2A1D]/40 py-10 bg-white rounded-3xl border border-dashed border-[#d6cabc] animate-pulse"
+              class="text-center text-[#4B2A1D]/40 py-10 bg-white rounded-3xl animate-pulse"
             >
               กำลังโหลดภารกิจ...
             </div>
           </div>
-
           <div id="tab-done" class="tab-content space-y-3">
             <div class="text-center text-[#4B2A1D]/40 py-8">
               ยังไม่มีงานที่ทำเสร็จ
@@ -429,19 +543,88 @@
     </div>
 
     <div id="admin-screen" class="hidden min-h-screen bg-[#fdfbf7]">
-      <header class="bg-[#4B2A1D] p-5 shadow-sm sticky top-0 z-20 text-white">
-        <div class="flex justify-between items-center max-w-3xl mx-auto">
-          <h2 class="text-xl font-bold">⚙️ จัดการระบบ</h2>
-          <button
-            onclick="showScreen('dashboard')"
-            class="text-sm font-bold text-[#f0e6d2] bg-[#784d3c] px-4 py-2 rounded-full hover:bg-[#8c5e4b] transition"
-          >
-            กลับ
-          </button>
-        </div>
+      <header
+        class="bg-[#4B2A1D] p-5 shadow-sm sticky top-0 z-20 text-white flex justify-between items-center"
+      >
+        <h2 class="text-xl font-bold">⚙️ จัดการระบบ</h2>
+        <button
+          onclick="showScreen('dashboard')"
+          class="text-sm font-bold text-[#f0e6d2] bg-[#784d3c] px-4 py-2 rounded-full"
+        >
+          กลับ
+        </button>
       </header>
 
       <main class="p-4 max-w-3xl mx-auto space-y-6 mt-4">
+        <section
+          class="gimbocha-card p-6 rounded-[2rem] bg-gradient-to-br from-white to-[#fef08a]/20 border border-[#fde047]/50"
+        >
+          <h3
+            class="text-lg font-bold text-[#b45309] mb-4 flex items-center gap-2"
+          >
+            <span>🔥</span> ตั้งค่าโปรโมชั่นคูณแต้ม
+          </h3>
+          <div class="space-y-4">
+            <div
+              class="flex items-center justify-between bg-white p-3 rounded-xl border border-[#f0e6d2]"
+            >
+              <label class="text-sm font-bold text-[#4B2A1D]"
+                >เปิดใช้งานโปรโมชั่น</label
+              >
+              <input
+                type="checkbox"
+                id="setting-is-active"
+                class="w-5 h-5 accent-[#df8b99]"
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold mb-1 ml-2 text-[#b45309]"
+                  >ถึงเวลา (เช่น 17 = 5โมง)</label
+                >
+                <input
+                  type="number"
+                  id="setting-time-limit"
+                  class="w-full p-3 border-2 border-[#fde047] rounded-xl outline-none focus:border-[#b45309] font-bold text-center text-[#b45309]"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1 ml-2 text-[#b45309]"
+                  >ตัวคูณ (เช่น 1.5 หรือ 2)</label
+                >
+                <input
+                  type="number"
+                  step="0.1"
+                  id="setting-multiplier"
+                  class="w-full p-3 border-2 border-[#fde047] rounded-xl outline-none focus:border-[#b45309] font-bold text-center text-[#b45309]"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1 ml-2 text-[#b45309]"
+                >ข้อความ Popup แจ้งพนักงาน</label
+              >
+              <textarea
+                id="setting-text"
+                rows="2"
+                class="w-full p-3 border-2 border-[#fde047] rounded-xl outline-none focus:border-[#b45309] text-sm text-[#4B2A1D]"
+                placeholder="พิมพ์ข้อความที่จะให้วิ่งด้านล่างจอที่นี่..."
+              ></textarea>
+            </div>
+            <button
+              onclick="handleSaveSettings()"
+              id="btn-save-settings"
+              class="w-full bg-[#eab308] text-white font-bold p-3 rounded-xl shadow-sm hover:opacity-90"
+            >
+              บันทึกโปรโมชั่น
+            </button>
+            <p
+              id="settings-msg"
+              class="text-center text-sm font-bold mt-2 hidden"
+            ></p>
+          </div>
+        </section>
+
         <section class="gimbocha-card p-6 rounded-[2rem]">
           <h3
             id="admin-form-title"
@@ -451,38 +634,30 @@
           </h3>
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
+              <label class="block text-xs font-bold mb-1 ml-2"
                 >ชื่องาน (Task Name)</label
-              >
-              <input
+              ><input
                 type="text"
                 id="add-task-name"
                 placeholder="เช่น เช็ดกระจกบานใหญ่"
-                class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl outline-none focus:border-[#2a6f78]"
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
-                  >คะแนน (Points)</label
-                >
-                <input
+                <label class="block text-xs font-bold mb-1 ml-2">คะแนน</label
+                ><input
                   type="number"
                   id="add-task-points"
                   placeholder="10"
-                  value="10"
-                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl outline-none focus:border-[#2a6f78]"
                 />
               </div>
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
-                  >ความถี่</label
-                >
-                <select
+                <label class="block text-xs font-bold mb-1 ml-2">ความถี่</label
+                ><select
                   id="add-task-freq"
-                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl outline-none focus:border-[#2a6f78]"
                 >
                   <option value="รายวัน">รายวัน</option>
                   <option value="วันเว้นวัน">วันเว้นวัน</option>
@@ -493,29 +668,26 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
+                <label class="block text-xs font-bold mb-1 ml-2"
                   >โซนพื้นที่</label
-                >
-                <select
+                ><select
                   id="add-task-zone"
-                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl outline-none focus:border-[#2a6f78]"
                 >
                   <option value="หน้าร้าน">หน้าร้าน</option>
                   <option value="บาร์">บาร์</option>
                   <option value="ครัว">ครัว</option>
-                  <option value="ที่นั่งบริการลูกค้า">ที่นั่งบริการ</option>
+                  <option value="ที่นั่งบริการลูกค้า">
+                    ที่นั่งบริการลูกค้า
+                  </option>
                   <option value="หลังร้านและโรงรถ">หลังร้านและโรงรถ</option>
                 </select>
               </div>
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4B2A1D]/60 mb-1 ml-2"
-                  >สาขาเฉพาะเจาะจง</label
-                >
-                <select
+                <label class="block text-xs font-bold mb-1 ml-2">สาขา</label
+                ><select
                   id="add-task-branch"
-                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl focus:border-[#2a6f78] outline-none bg-[#fdfbf7] text-[#4B2A1D]"
+                  class="w-full p-4 border-2 border-[#f0e6d2] rounded-2xl outline-none focus:border-[#2a6f78]"
                 >
                   <option value="ทุกสาขา">📍 ทุกสาขา</option>
                   <option value="เกษมสันต์ 1">เกษมสันต์ 1</option>
@@ -523,19 +695,18 @@
                 </select>
               </div>
             </div>
-
             <div class="flex gap-2 pt-2">
               <button
                 id="btn-cancel-edit"
                 onclick="cancelEditMode()"
-                class="hidden w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl hover:bg-[#e0d6c2] transition"
+                class="hidden w-1/3 bg-[#f0e6d2] text-[#4B2A1D] font-bold p-4 rounded-2xl"
               >
                 ยกเลิก
               </button>
               <button
                 id="btn-add-task"
                 onclick="handleSaveTask()"
-                class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl hover:opacity-90 transition shadow-sm"
+                class="w-full gimbocha-secondary text-white font-bold p-4 rounded-2xl"
               >
                 บันทึกงานใหม่
               </button>
@@ -548,26 +719,19 @@
         </section>
 
         <section class="gimbocha-card p-6 rounded-[2rem]">
-          <h3
-            class="text-lg font-bold text-[#4B2A1D] mb-4 flex items-center gap-2"
-          >
+          <h3 class="text-lg font-bold text-[#4B2A1D] mb-4">
             <span>📋</span> รายการงานทั้งหมด
           </h3>
-          <div id="admin-task-list" class="space-y-3">
-            <div class="text-center text-[#4B2A1D]/40 py-4">
-              กำลังโหลดข้อมูล...
-            </div>
-          </div>
+          <div id="admin-task-list" class="space-y-3"></div>
         </section>
       </main>
     </div>
 
     <script>
-      // 🛑 อัปเดต URL ใหม่เรียบร้อยแล้ว
       const API_URL =
-        "https://script.google.com/macros/s/AKfycbz1oAH94b3Sr_y22lPsKe0OFeTuPyu6GibK822yUyAFYb-YbritcS1CiFnctk-qqfI/exec";
+        "https://script.google.com/macros/s/AKfycbxT7Ze7n9GAeU6K0HFCusOnfCDhsAkb3LVvERu6gcyjmK8DfCFfDQN0Iw6XsyWTzQ/exec";
 
-      // 🌟 ตั้งค่ารหัสลับ (Code Name) แก้ไข/เพิ่มเติมได้ที่นี่ครับ
+      // รหัสลับของพนักงานประจำ (ใช้สำหรับเข้าหน้า Admin ด้วย)
       const VERIFIER_CODES = {
         1111: "แบม",
         2222: "มาร์ค",
@@ -577,11 +741,16 @@
         9999: "บอส",
       };
 
-      // 🌟 ตัวแปรเก็บสถานะการทำงาน
-      let pendingTaskData = null;
-      let userState = { phone: "", name: "", branch: "" };
-      let currentTasks = [];
-      let editingTaskId = null;
+      let pendingTaskData = null,
+        userState = { phone: "", name: "", branch: "" },
+        currentTasks = [],
+        editingTaskId = null;
+      let appSettings = {
+        isActive: false,
+        timeLimit: 17,
+        multiplier: 1.5,
+        text: "",
+      };
 
       window.onload = function () {
         const savedState = localStorage.getItem("gimbocha_state");
@@ -611,47 +780,121 @@
         if (screen === "admin") {
           cancelEditMode();
           renderAdminTaskList();
+          populateSettingsForm();
         }
       }
 
-      // 🌟 ท่าไม้ตาย แก้ปัญหา CORS: ส่งข้อมูลผ่าน URL Parameters (GET Request)
+      // 🌟 ระบบถามรหัสผ่านเข้า Admin
+      function promptAdminPin() {
+        document.getElementById("admin-pin-code").value = "";
+        document.getElementById("admin-auth-modal").classList.remove("hidden");
+        document.getElementById("admin-auth-modal").classList.add("flex");
+      }
+      function closeAdminAuthModal() {
+        document.getElementById("admin-auth-modal").classList.add("hidden");
+        document.getElementById("admin-auth-modal").classList.remove("flex");
+      }
+      function verifyAdminPin() {
+        const pin = document.getElementById("admin-pin-code").value.trim();
+        if (!pin) return alert("กรุณาใส่รหัสประจำตัวด้วยค่ะ!");
+        if (VERIFIER_CODES[pin]) {
+          closeAdminAuthModal();
+          showScreen("admin");
+        } else {
+          alert("รหัสไม่ถูกต้อง! เฉพาะพนักงานประจำเท่านั้นค่ะ");
+          document.getElementById("admin-pin-code").value = "";
+        }
+      }
+
+      function showRulesModal() {
+        document.getElementById("rules-modal").classList.remove("hidden");
+        document.getElementById("rules-modal").classList.add("flex");
+      }
+      function closeRulesModal() {
+        document.getElementById("rules-modal").classList.add("hidden");
+        document.getElementById("rules-modal").classList.remove("flex");
+        localStorage.setItem("gimbocha_rules_read", "true");
+      }
+      function closePrimeTimeModal() {
+        document.getElementById("primetime-modal").classList.add("hidden");
+        document.getElementById("primetime-modal").classList.remove("flex");
+      }
+
       async function fetchAPI(payload) {
         const url = `${API_URL}?payload=${encodeURIComponent(JSON.stringify(payload))}`;
         try {
           const res = await fetch(url);
-          const text = await res.text(); // อ่านสิ่งที่ Google ตอบกลับมาก่อน
+          const text = await res.text();
           try {
-            return JSON.parse(text); // ถ้าเป็น JSON ปกติ แปลว่าสำเร็จ
-          } catch (parseError) {
-            console.error("Google ตอบกลับมาผิดปกติ:", text);
-            throw new Error("Invalid Server Response");
+            return JSON.parse(text);
+          } catch (e) {
+            throw new Error("Invalid Response");
           }
-        } catch (networkError) {
-          console.error("Network Error:", networkError);
-          throw networkError;
+        } catch (err) {
+          throw err;
         }
       }
 
+      function getUserRankProgress(score) {
+        let currentName, icon, min, max, nextName;
+        if (score <= 150) {
+          currentName = "ลูกสมุนยาย";
+          icon = "🥉";
+          min = 0;
+          max = 151;
+          nextName = "หลานรักหน้าใส";
+        } else if (score <= 400) {
+          currentName = "หลานรักหน้าใส";
+          icon = "🥈";
+          min = 151;
+          max = 401;
+          nextName = "มือขวาอาซิ่ม";
+        } else if (score <= 800) {
+          currentName = "มือขวาอาซิ่ม";
+          icon = "🥇";
+          min = 401;
+          max = 801;
+          nextName = "ทายาทตระกูลสะอาด";
+        } else {
+          currentName = "ทายาทตระกูลสะอาด";
+          icon = "💎";
+          min = 801;
+          max = score;
+          nextName = "MAX Level";
+        }
+
+        let pct =
+          max === min
+            ? 100
+            : Math.min(100, Math.max(0, ((score - min) / (max - min)) * 100));
+        if (score > 800) pct = 100;
+        return {
+          name: currentName,
+          icon: icon,
+          pct: pct,
+          nextMax: max,
+          nextName: nextName,
+        };
+      }
+
       async function handleLogin() {
-        const phone = document.getElementById("login-phone").value.trim();
-        const name = document.getElementById("login-name").value.trim();
-        const err = document.getElementById("auth-error");
-        const btn = document.getElementById("login-btn");
+        const phone = document.getElementById("login-phone").value.trim(),
+          name = document.getElementById("login-name").value.trim(),
+          err = document.getElementById("auth-error"),
+          btn = document.getElementById("login-btn");
         err.classList.add("hidden");
         if (!phone) {
-          err.innerText = "รบกวนใส่เบอร์โทรด้วยนะคะ";
+          err.innerText = "ใส่เบอร์โทรด้วยนะคะ";
           err.classList.remove("hidden");
           return;
         }
-
         btn.disabled = true;
         btn.innerHTML = "⏳ กำลังเข้าระบบ...";
-
         try {
-          const url = `${API_URL}?action=loginOrRegister&phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`;
-          const res = await fetch(url);
+          const res = await fetch(
+            `${API_URL}?action=loginOrRegister&phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`,
+          );
           const data = await res.json();
-
           if (data.status === "success") {
             userState.phone = data.phone;
             userState.name = data.name;
@@ -665,7 +908,6 @@
         } catch (e) {
           err.innerText = "เชื่อมต่อไม่ได้ ลองเช็คเน็ตดูนะคะ";
           err.classList.remove("hidden");
-          console.error(e);
         } finally {
           btn.disabled = false;
           btn.innerText = "เริ่มงานเลย!";
@@ -698,41 +940,100 @@
         return `<span class="inline-block bg-[#f5f5f4] text-[#78716c] text-[10px] font-bold px-2.5 py-0.5 rounded-full ml-1 border border-[#e7e5e4]">ทุกวัน</span>`;
       }
 
-      function switchTab(tabName) {
+      function switchTab(t) {
         document.getElementById("tab-btn-todo").className =
-          "w-1/2 py-3 text-sm font-bold rounded-xl transition-all text-[#4B2A1D]/50 hover:text-[#4B2A1D]";
+          t === "todo"
+            ? "w-1/2 py-3 text-sm font-bold rounded-xl bg-white shadow-sm"
+            : "w-1/2 py-3 text-sm font-bold rounded-xl text-[#4B2A1D]/50";
         document.getElementById("tab-btn-done").className =
-          "w-1/2 py-3 text-sm font-bold rounded-xl transition-all text-[#4B2A1D]/50 hover:text-[#4B2A1D]";
-        document.getElementById("tab-todo").classList.remove("active");
-        document.getElementById("tab-done").classList.remove("active");
-        document.getElementById(`tab-btn-${tabName}`).className =
-          "w-1/2 py-3 text-sm font-bold rounded-xl transition-all bg-white text-[#4B2A1D] shadow-sm";
-        document.getElementById(`tab-${tabName}`).classList.add("active");
+          t === "done"
+            ? "w-1/2 py-3 text-sm font-bold rounded-xl bg-white shadow-sm"
+            : "w-1/2 py-3 text-sm font-bold rounded-xl text-[#4B2A1D]/50";
+        document
+          .getElementById("tab-todo")
+          .classList.toggle("active", t === "todo");
+        document
+          .getElementById("tab-done")
+          .classList.toggle("active", t === "done");
       }
 
       async function loadDashboardData(isSilent = false) {
         if (!isSilent) {
           document.getElementById("tab-todo").innerHTML =
-            '<div class="text-center text-[#4B2A1D]/40 py-10 bg-white rounded-3xl border border-dashed border-[#d6cabc] animate-pulse">กำลังซิงค์ข้อมูล...</div>';
+            '<div class="text-center py-10 bg-white rounded-3xl animate-pulse">กำลังซิงค์ข้อมูล...</div>';
           document.getElementById("tab-done").innerHTML =
-            '<div class="text-center text-[#4B2A1D]/40 py-10">กำลังซิงค์...</div>';
+            '<div class="text-center py-10">กำลังซิงค์...</div>';
         }
         try {
-          const url = `${API_URL}?action=getDashboard&branch=${encodeURIComponent(userState.branch)}`;
+          const url = `${API_URL}?action=getDashboard&branch=${encodeURIComponent(userState.branch)}&phone=${encodeURIComponent(userState.phone)}`;
           const res = await fetch(url);
           const data = await res.json();
 
+          appSettings = data.settings;
+
+          const myScore = data.myScore || 0;
+          const myRank = getUserRankProgress(myScore);
+          document.getElementById("dash-rank-icon").innerText = myRank.icon;
+          document.getElementById("dash-rank-name").innerText = myRank.name;
+          document.getElementById("rank-current-score").innerText =
+            myScore + " pts";
+          document.getElementById("rank-next-score").innerText =
+            myRank.nextMax > myScore
+              ? `Next: ${myRank.nextName} (${myRank.nextMax} pts)`
+              : "MAX LEVEL";
+          document.getElementById("rank-progress-bar").style.width =
+            myRank.pct + "%";
+
+          const promoFooter = document.getElementById("promo-footer");
+          const currentHour = new Date().getHours();
+
+          if (!isSilent) {
+            if (!localStorage.getItem("gimbocha_rules_read")) {
+              showRulesModal();
+            } else if (
+              appSettings.isActive &&
+              currentHour < appSettings.timeLimit
+            ) {
+              if (!localStorage.getItem("gimbocha_prime_shown_today")) {
+                localStorage.setItem(
+                  "gimbocha_prime_shown_today",
+                  new Date().toDateString(),
+                );
+                document.getElementById("promo-text-display").innerText =
+                  appSettings.text;
+                document
+                  .getElementById("primetime-modal")
+                  .classList.remove("hidden");
+                document
+                  .getElementById("primetime-modal")
+                  .classList.add("flex");
+              }
+            }
+          }
+
+          // 🌟 ระบบดึงข้อความจาก Admin มาแสดงในแถบวิ่ง (Marquee)
+          if (appSettings.isActive && currentHour < appSettings.timeLimit) {
+            // เอาข้อความที่บอสพิมพ์ มาใส่แทน Default Hot Deal
+            document.getElementById("footer-marquee-text").innerText =
+              "🔥 " + appSettings.text + " 🏃💨";
+            promoFooter.classList.remove("hidden");
+            document.body.classList.add("pb-16"); // เพิ่มพื้นที่ไม่ให้โดนบัง
+          } else {
+            promoFooter.classList.add("hidden");
+            document.body.classList.remove("pb-16");
+          }
+
           const topListEl = document.getElementById("top-cleaners-list");
           if (data.topCleaners && data.topCleaners.length > 0) {
-            let topHtml = "";
-            const medals = ["🥇", "🥈", "🥉"];
-            data.topCleaners.forEach((cleaner, index) => {
-              topHtml += `<div class="flex justify-between items-center bg-white/70 p-2.5 rounded-2xl backdrop-blur-md border border-white/80 shadow-sm"><div class="flex items-center gap-2"><span class="text-xl drop-shadow-sm">${medals[index] || "🏅"}</span><span class="font-bold text-[#4B2A1D] text-sm truncate max-w-[120px]">${cleaner.name}</span></div><span class="text-xs font-bold gimbocha-primary-text bg-white px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">${cleaner.score.toLocaleString()} pts</span></div>`;
-            });
-            topListEl.innerHTML = topHtml;
+            topListEl.innerHTML = data.topCleaners
+              .map((c, i) => {
+                let rank = getUserRankProgress(c.score);
+                return `<div class="flex justify-between items-center bg-white/70 p-2.5 rounded-2xl shadow-sm"><div class="flex items-center gap-2"><span class="text-xl">${["🥇", "🥈", "🥉"][i] || "🏅"}</span><span class="text-sm">${rank.icon}</span><span class="font-bold text-sm">${c.name}</span></div><span class="text-xs font-bold text-[#df8b99] bg-white px-2.5 py-1 rounded-xl shadow-sm">${c.score.toLocaleString()} pts</span></div>`;
+              })
+              .join("");
           } else {
             topListEl.innerHTML =
-              '<div class="text-sm text-[#b45309] p-2 text-center bg-white/40 rounded-xl">ยังไม่มีข้อมูลในเดือนนี้</div>';
+              '<div class="text-sm p-2 text-center bg-white/40 rounded-xl">ยังไม่มีข้อมูลในเดือนนี้</div>';
           }
 
           const hist = data.history || {
@@ -752,15 +1053,7 @@
             hist.last1.pct + "%";
           document.getElementById("stat-last2").innerText =
             hist.last2.pct + "%";
-          if (hist.current.pct > hist.last1.pct) {
-            document.getElementById("stat-last1").innerHTML +=
-              ' <span class="text-emerald-300">↑</span>';
-          } else if (hist.current.pct < hist.last1.pct && hist.last1.pct > 0) {
-            document.getElementById("stat-last1").innerHTML +=
-              ' <span class="text-red-300">↓</span>';
-          }
 
-          // 🌟 อัปเดต: เปลี่ยนเป็นดึงเปอร์เซ็นต์มาโชว์ใน ศึกความสะอาด
           const battlePct = data.battlePercentages || {
             "เกษมสันต์ 1": 0,
             เสาชิงช้า: 0,
@@ -770,37 +1063,22 @@
           document.getElementById("score-sc").innerText =
             battlePct["เสาชิงช้า"] + "%";
 
-          // 🌟 โซนสุขภาพแสดง Emoji และเปอร์เซ็นต์
           const zones = data.zoneHealth || {};
           const zoneContainer = document.getElementById("zone-stats-container");
           let newZoneHTML = "";
-
           for (const [zName, stat] of Object.entries(zones)) {
-            if (stat.total === 0) continue; // ถ้าไม่มีงานในโซนนี้ให้ข้าม
-
+            if (stat.total === 0) continue;
             let pct = Math.round((stat.done / stat.total) * 100);
             let emoji = "😠";
-            let colorClass = "bg-[#f43f5e]"; // แดง
-
+            let colorClass = "bg-[#f43f5e]";
             if (pct >= 80) {
               emoji = "😊";
               colorClass = "bg-[#10b981]";
-            } // เขียว
-            else if (pct >= 50) {
+            } else if (pct >= 50) {
               emoji = "😐";
               colorClass = "bg-[#f59e0b]";
-            } // เหลือง/ส้ม
-
-            newZoneHTML += `
-                        <div class="mb-4">
-                            <div class="flex justify-between items-end text-xs mb-1.5">
-                                <span class="font-bold text-[#4B2A1D]/80 flex items-center gap-1.5"><span class="text-base">${emoji}</span> ${zName}</span>
-                                <span class="text-[#4B2A1D]/50 font-bold bg-[#fdfbf7] border border-[#f0e6d2] px-2 py-0.5 rounded-lg">${stat.done}/${stat.total} จุด</span>
-                            </div>
-                            <div class="w-full bg-[#f4f1eb] rounded-full h-3 overflow-hidden border border-[#eae1d3] shadow-inner">
-                                <div class="zone-bar ${colorClass} h-full rounded-full transition-all duration-1000" style="width: ${pct}%"></div>
-                            </div>
-                        </div>`;
+            }
+            newZoneHTML += `<div class="mb-4"><div class="flex justify-between items-end text-xs mb-1.5"><span class="font-bold text-[#4B2A1D]/80 flex items-center gap-1.5"><span class="text-base">${emoji}</span> ${zName}</span><span class="text-[#4B2A1D]/50 font-bold bg-[#fdfbf7] border border-[#f0e6d2] px-2 py-0.5 rounded-lg">${stat.done}/${stat.total} จุด</span></div><div class="w-full bg-[#f4f1eb] rounded-full h-3 overflow-hidden border border-[#eae1d3] shadow-inner"><div class="zone-bar ${colorClass} h-full rounded-full transition-all duration-1000" style="width: ${pct}%"></div></div></div>`;
           }
           zoneContainer.innerHTML =
             newZoneHTML ||
@@ -812,23 +1090,27 @@
             !document
               .getElementById("admin-screen")
               .classList.contains("hidden")
-          )
+          ) {
             renderAdminTaskList();
+            populateSettingsForm();
+          }
         } catch (error) {
           if (!isSilent)
             document.getElementById("tab-todo").innerHTML =
               '<div class="text-center text-[#df8b99] py-4 font-bold">โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชอีกครั้งนะคะ</div>';
-          console.error(error);
         }
       }
 
       function renderTaskTabs() {
-        const elTodo = document.getElementById("tab-todo");
-        const elDone = document.getElementById("tab-done");
-        let pendingTasksByZone = {};
-        let completedTasks = [];
-        let countTodo = 0;
-        let countDone = 0;
+        const elTodo = document.getElementById("tab-todo"),
+          elDone = document.getElementById("tab-done");
+        let pendingTasksByZone = {},
+          completedTasks = [],
+          countTodo = 0,
+          countDone = 0;
+        const currentHour = new Date().getHours();
+        const isPrimeTime =
+          appSettings.isActive && currentHour < appSettings.timeLimit;
 
         currentTasks.forEach((t) => {
           if (t.isCompleted) {
@@ -846,30 +1128,26 @@
 
         let htmlTodo = "";
         if (countTodo === 0) {
-          htmlTodo = `<div class="text-center py-12 bg-[#df8b99]/10 rounded-3xl border border-[#df8b99]/20 mb-6"><div class="text-5xl mb-3 drop-shadow-sm">🌸</div><h4 class="font-bold text-[#df8b99] text-xl">ไม่มีงานค้างแล้ว!</h4><p class="text-[#df8b99]/70 text-sm mt-1">สาขา ${userState.branch} สะอาดเอี่ยมอ่อง</p></div>`;
+          htmlTodo = `<div class="text-center py-12 bg-[#df8b99]/10 rounded-3xl mb-6"><div class="text-5xl mb-3 drop-shadow-sm">🌸</div><h4 class="font-bold text-[#df8b99] text-xl">ไม่มีงานค้างแล้ว!</h4></div>`;
         } else {
           for (const [zone, tasks] of Object.entries(pendingTasksByZone)) {
             htmlTodo += `<div class="text-sm font-bold text-[#2a6f78] mt-6 mb-3 pl-3 border-l-4 border-[#2a6f78] flex items-center">${zone}</div>`;
             tasks.forEach((task) => {
-              let freqBadge = getFrequencyBadge(task.frequency);
-              let overdueBadge = "";
-              if (task.overdueDays > 0)
-                overdueBadge = `<span class="inline-block bg-[#fef2f2] text-[#e11d48] text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1.5 border border-[#fecdd3]">🚨 ค้างมา ${task.overdueDays} วัน!</span>`;
-              else if (task.overdueDays === -1)
-                overdueBadge = `<span class="inline-block bg-[#fffbeb] text-[#d97706] text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1.5 border border-[#fef08a]">⚠️ ยังไม่เคยทำ</span>`;
+              let ovd =
+                task.overdueDays > 0
+                  ? `<span class="inline-block bg-[#fef2f2] text-[#e11d48] text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1.5 border border-[#fecdd3]">🚨 ค้างมา ${task.overdueDays} วัน!</span>`
+                  : task.overdueDays === -1
+                    ? `<span class="inline-block bg-[#fffbeb] text-[#d97706] text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1.5 border border-[#fef08a]">⚠️ ยังไม่เคยทำ</span>`
+                    : "";
 
-              htmlTodo += `
-                            <div class="gimbocha-card relative rounded-3xl overflow-hidden mb-3 active:scale-[0.98] transition-transform p-4 flex justify-between items-center group">
-                                <div class="pr-3 relative z-10 w-[80%]">
-                                    <h4 class="text-[15px] font-bold text-[#4B2A1D] leading-snug mb-1.5">${task.name}</h4>
-                                    <div class="flex items-center flex-wrap gap-1">
-                                        <span class="inline-block bg-[#f0e6d2]/50 text-[#4B2A1D]/70 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-[#f0e6d2]">+${task.points} pts</span>
-                                        ${freqBadge}
-                                    </div>
-                                    ${overdueBadge}
-                                </div>
-                                <button onclick="startTaskProgress('${task.id}', '${task.name}', ${task.points}, '${task.zone}')" class="shrink-0 gimbocha-primary text-white font-bold h-14 w-14 rounded-full flex items-center justify-center shadow-sm relative active:opacity-80 transition-colors group-hover:scale-105"><span class="text-xl drop-shadow-sm">✓</span></button>
-                            </div>`;
+              let pointsDisplay = `+${task.points} pts`;
+              let pointsClass = `bg-[#f0e6d2]/50 text-[#4B2A1D]/70 border border-[#f0e6d2]`;
+              if (isPrimeTime) {
+                pointsDisplay = `🔥 โบนัส +${Math.ceil(task.points * appSettings.multiplier)} pts`;
+                pointsClass = `bg-[#fef08a] text-[#b45309] border border-[#fde047] animate-pulse`;
+              }
+
+              htmlTodo += `<div class="gimbocha-card relative rounded-3xl overflow-hidden mb-3 active:scale-[0.98] transition-transform p-4 flex justify-between items-center"><div class="pr-3 w-[80%]"><h4 class="text-[15px] font-bold text-[#4B2A1D] leading-snug mb-1.5">${task.name}</h4><div class="flex items-center flex-wrap gap-1"><span class="inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full ${pointsClass}">${pointsDisplay}</span>${getFrequencyBadge(task.frequency)}</div>${ovd}</div><button onclick="startTaskProgress('${task.id}', '${task.name}', ${task.points}, '${task.zone}')" class="shrink-0 gimbocha-primary text-white font-bold h-14 w-14 rounded-full flex items-center justify-center shadow-sm relative active:opacity-80 transition-colors text-xl">✓</button></div>`;
             });
           }
         }
@@ -878,78 +1156,50 @@
         let htmlDone = "";
         if (countDone === 0) {
           htmlDone =
-            '<div class="text-center text-[#4B2A1D]/40 py-10 bg-white rounded-3xl border border-dashed border-[#d6cabc]">ยังไม่มีงานที่ทำเสร็จในโควต้านี้</div>';
+            '<div class="text-center text-[#4B2A1D]/40 py-10 bg-white rounded-3xl border border-dashed">ยังไม่มีงานที่ทำเสร็จในโควต้านี้</div>';
         } else {
           completedTasks.reverse().forEach((task) => {
-            let freqBadge = getFrequencyBadge(task.frequency);
-            let verifierText = task.verifier
+            let vfText = task.verifier
               ? ` <span class="opacity-75">(ตรวจโดย ${task.verifier})</span>`
               : "";
-
-            htmlDone += `
-                        <div class="task-done p-4 rounded-3xl border flex justify-between items-center mb-3">
-                            <div class="pr-3 w-[85%]">
-                                <h4 class="text-[15px] font-bold text-[#4B2A1D]/50 leading-snug mb-1.5 line-through decoration-[#4B2A1D]/20">${task.name}</h4>
-                                <div class="flex items-center flex-wrap gap-1 mt-1 opacity-70">
-                                    <span class="inline-block bg-[#e5dfd3] text-[#4B2A1D]/70 text-[10px] font-bold px-2.5 py-0.5 rounded-full">${task.points} pts</span>
-                                    ${freqBadge}
-                                </div>
-                                <div class="mt-2">
-                                    <span class="text-[11px] font-bold gimbocha-secondary-text bg-[#2a6f78]/10 px-2.5 py-1 rounded-xl block truncate">✓ ทำโดย ${task.completedBy}${verifierText} (${task.completedTime} น.)</span>
-                                </div>
-                            </div>
-                            <div class="shrink-0 text-[#2a6f78]/30 font-bold h-10 w-10 flex items-center justify-center"><span class="text-2xl">✅</span></div>
-                        </div>`;
+            htmlDone += `<div class="task-done p-4 rounded-3xl border flex justify-between items-center mb-3"><div class="pr-3 w-[85%]"><h4 class="text-[15px] font-bold text-[#4B2A1D]/50 leading-snug mb-1.5 line-through decoration-[#4B2A1D]/20">${task.name}</h4><div class="flex items-center flex-wrap gap-1 mt-1 opacity-70"><span class="inline-block bg-[#e5dfd3] text-[#4B2A1D]/70 text-[10px] font-bold px-2.5 py-0.5 rounded-full">${task.points} pts</span>${getFrequencyBadge(task.frequency)}</div><div class="mt-2"><span class="text-[11px] font-bold bg-[#2a6f78]/10 text-[#2a6f78] px-2.5 py-1 rounded-xl block truncate">✓ ทำโดย ${task.completedBy}${vfText} (${task.completedTime} น.)</span></div></div><div class="shrink-0 text-[#2a6f78]/30 font-bold h-10 w-10 flex items-center justify-center text-2xl">✅</div></div>`;
           });
         }
         elDone.innerHTML = htmlDone;
       }
 
       async function silentRefresh(btn) {
-        const originalHTML = btn.innerHTML;
+        const o = btn.innerHTML;
         btn.innerHTML = "⏳ กำลังดึงข้อมูล...";
         btn.disabled = true;
         await loadDashboardData(true);
-        btn.innerHTML = originalHTML;
+        btn.innerHTML = o;
         btn.disabled = false;
       }
 
-      // 🌟 1. ฟังก์ชันเปิดหน้าต่างรหัสลับ
       function startTaskProgress(taskId, taskName, points, zone) {
         pendingTaskData = { taskId, taskName, points, zone };
-        const taskLabel = document.getElementById("verify-task-name");
-        const inputCode = document.getElementById("verifier-code");
+        document.getElementById("verify-task-name").innerText = taskName;
+        document.getElementById("verifier-code").value = "";
         const modal = document.getElementById("verify-modal");
-
-        if (taskLabel) taskLabel.innerText = taskName;
-        if (inputCode) inputCode.value = "";
-
         if (modal) {
           modal.classList.remove("hidden");
           modal.classList.add("flex");
         }
       }
 
-      // 🌟 2. ฟังก์ชันปิดหน้าต่าง (ลบตัวเคลียร์ข้อมูลออก ป้องกันบัคจอค้าง)
       function closeVerifyModal() {
         const modal = document.getElementById("verify-modal");
         if (modal) {
           modal.classList.add("hidden");
           modal.classList.remove("flex");
         }
-        // ❌ ห้ามล้าง pendingTaskData ตรงนี้เด็ดขาด
       }
 
-      // 🌟 3. ฟังก์ชันยืนยันและส่งข้อมูล (เพิ่มความทนทาน)
       async function confirmTaskProgress() {
-        const inputCode = document.getElementById("verifier-code").value.trim();
-        const loader = document.getElementById("global-loader");
-
-        if (!inputCode) {
-          alert("กรุณาใส่รหัสลับด้วยนะคะ!");
-          return;
-        }
-
+        const inputCode = document.getElementById("verifier-code").value.trim(),
+          loader = document.getElementById("global-loader");
+        if (!inputCode) return alert("กรุณาใส่รหัสลับด้วยนะคะ!");
         const verifierName = VERIFIER_CODES[inputCode];
         if (!verifierName) {
           alert("รหัสลับไม่ถูกต้อง! รบกวนลองใหม่อีกครั้งค่ะ");
@@ -957,7 +1207,6 @@
           return;
         }
 
-        // เตรียม Payload ข้อมูลก่อนล้างค่า
         const payload = {
           action: "completeTask",
           phone: userState.phone,
@@ -969,19 +1218,14 @@
           zone: pendingTaskData.zone,
           verifierName: verifierName,
         };
-
-        // ปิด Modal
         closeVerifyModal();
 
-        // แสดง Loader และล็อคจอ
         if (loader) {
           loader.querySelector("#loader-text").innerText =
             "✨ กำลังบันทึกข้อมูล...";
           loader.classList.remove("hidden");
           loader.classList.add("flex");
         }
-
-        // ตั้งระบบ Timeout กันเหนียว 10 วินาที
         const safetyTimeout = setTimeout(() => {
           if (loader && !loader.classList.contains("hidden")) {
             loader.classList.add("hidden");
@@ -993,24 +1237,17 @@
         }, 10000);
 
         try {
-          // ส่งข้อมูลไปหลังบ้าน
           const result = await fetchAPI(payload);
-          clearTimeout(safetyTimeout); // บันทึกสำเร็จ ยกเลิกตัวจับเวลา Timeout
-
+          clearTimeout(safetyTimeout);
           if (result && result.status === "success") {
-            if (typeof createGlobalConfetti === "function")
-              createGlobalConfetti();
+            createGlobalConfetti();
             await loadDashboardData(true);
           } else {
             alert(result.message || "บันทึกไม่สำเร็จ ลองใหม่อีกครั้งนะคะ");
           }
         } catch (error) {
-          console.error("Error saving task:", error);
-          alert(
-            "การเชื่อมต่อมีปัญหา แต่ข้อมูลอาจจะบันทึกไปแล้ว รบกวนรีเฟรชหน้าจอเช็คดูนะคะ",
-          );
+          alert("ระบบขัดข้อง: อาจเกิดจากอินเทอร์เน็ตมีปัญหาค่ะ");
         } finally {
-          // ✅ ไม่ว่าจะสำเร็จหรือพัง ต้องปิดหน้าจอโหลดเสมอ ป้องกันการค้าง
           if (loader) {
             loader.classList.add("hidden");
             loader.classList.remove("flex");
@@ -1047,7 +1284,51 @@
         }
       }
 
-      // --- ระบบ Admin ---
+      function populateSettingsForm() {
+        document.getElementById("setting-is-active").checked =
+          appSettings.isActive;
+        document.getElementById("setting-time-limit").value =
+          appSettings.timeLimit;
+        document.getElementById("setting-multiplier").value =
+          appSettings.multiplier;
+        document.getElementById("setting-text").value = appSettings.text;
+      }
+
+      async function handleSaveSettings() {
+        const btn = document.getElementById("btn-save-settings");
+        const msgEl = document.getElementById("settings-msg");
+        btn.disabled = true;
+        btn.innerHTML = "⏳ กำลังบันทึก...";
+        const payload = {
+          action: "saveSettings",
+          isActive: document.getElementById("setting-is-active").checked,
+          timeLimit:
+            parseInt(document.getElementById("setting-time-limit").value) || 17,
+          multiplier:
+            parseFloat(document.getElementById("setting-multiplier").value) ||
+            1.5,
+          text: document.getElementById("setting-text").value.trim(),
+        };
+        try {
+          await fetchAPI(payload);
+          msgEl.innerText = "✅ บันทึกการตั้งค่าสำเร็จ!";
+          msgEl.className =
+            "text-center text-sm font-bold mt-2 text-[#2a6f78] block";
+          appSettings = payload;
+          await loadDashboardData(true);
+        } catch (e) {
+          msgEl.innerText = "❌ เกิดข้อผิดพลาด";
+          msgEl.className =
+            "text-center text-sm font-bold mt-2 text-red-500 block";
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "บันทึกโปรโมชั่น";
+          setTimeout(() => {
+            msgEl.classList.add("hidden");
+          }, 3000);
+        }
+      }
+
       function renderAdminTaskList() {
         const listEl = document.getElementById("admin-task-list");
         listEl.innerHTML = "";
@@ -1056,40 +1337,26 @@
             '<div class="text-center text-[#4B2A1D]/40 py-4">ไม่พบข้อมูลงาน</div>';
           return;
         }
-
-        currentTasks.forEach((task) => {
+        currentTasks.forEach((t) => {
           let brBadge =
-            task.taskBranch === "ทุกสาขา"
+            t.taskBranch === "ทุกสาขา"
               ? `<span class="text-[#2a6f78] bg-[#2a6f78]/10 px-1.5 py-0.5 rounded">📍ทุกสาขา</span>`
-              : `<span class="text-[#df8b99] bg-[#df8b99]/10 px-1.5 py-0.5 rounded">${task.taskBranch}</span>`;
-
-          listEl.innerHTML += `
-                    <div class="p-4 border-2 border-[#f0e6d2] rounded-2xl flex justify-between items-center bg-white mb-2 shadow-sm">
-                        <div class="w-[70%]">
-                            <p class="font-bold text-[#4B2A1D] text-[15px] leading-snug mb-1">${task.name}</p>
-                            <p class="text-xs text-[#4B2A1D]/50 font-bold">${brBadge} • ${task.zone} • ${task.points} pts • ${task.frequency}</p>
-                        </div>
-                        <div class="flex gap-2 flex-col">
-                            <button onclick="prepareEditTask('${task.id}')" class="text-xs bg-[#2a6f78]/10 text-[#2a6f78] px-3 py-1.5 rounded-xl font-bold hover:bg-[#2a6f78]/20 transition">แก้ไข</button>
-                            <button onclick="handleDeleteTask('${task.id}', '${task.name}')" class="text-xs bg-red-50 text-red-500 px-3 py-1.5 rounded-xl font-bold hover:bg-red-100 transition">ลบ</button>
-                        </div>
-                    </div>`;
+              : `<span class="text-[#df8b99] bg-[#df8b99]/10 px-1.5 py-0.5 rounded">${t.taskBranch}</span>`;
+          listEl.innerHTML += `<div class="p-4 border-2 border-[#f0e6d2] rounded-2xl flex justify-between items-center bg-white mb-2 shadow-sm"><div class="w-[70%]"><p class="font-bold text-[#4B2A1D] text-[15px] leading-snug mb-1">${t.name}</p><p class="text-xs text-[#4B2A1D]/50 font-bold">${brBadge} • ${t.zone} • ${t.points} pts • ${t.frequency}</p></div><div class="flex gap-2 flex-col"><button onclick="prepareEditTask('${t.id}')" class="text-xs bg-[#2a6f78]/10 text-[#2a6f78] px-3 py-1.5 rounded-xl font-bold">แก้ไข</button><button onclick="handleDeleteTask('${t.id}', '${t.name}')" class="text-xs bg-red-50 text-red-500 px-3 py-1.5 rounded-xl font-bold">ลบ</button></div></div>`;
         });
       }
 
       function prepareEditTask(taskId) {
-        const task = currentTasks.find((t) => t.id === taskId);
-        if (!task) return;
+        const t = currentTasks.find((x) => x.id === taskId);
+        if (!t) return;
         editingTaskId = taskId;
-
         document.getElementById("admin-form-title").innerHTML =
           `<span>✏️</span> แก้ไขงาน: ${taskId}`;
-        document.getElementById("add-task-name").value = task.name;
-        document.getElementById("add-task-points").value = task.points;
-        document.getElementById("add-task-freq").value = task.frequency;
-        document.getElementById("add-task-zone").value = task.zone;
-        document.getElementById("add-task-branch").value = task.taskBranch;
-
+        document.getElementById("add-task-name").value = t.name;
+        document.getElementById("add-task-points").value = t.points;
+        document.getElementById("add-task-freq").value = t.frequency;
+        document.getElementById("add-task-zone").value = t.zone;
+        document.getElementById("add-task-branch").value = t.taskBranch;
         document.getElementById("btn-add-task").innerText = "บันทึกการแก้ไข";
         document.getElementById("btn-cancel-edit").classList.remove("hidden");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1109,26 +1376,23 @@
       }
 
       async function handleSaveTask() {
-        const name = document.getElementById("add-task-name").value.trim();
-        const points = document.getElementById("add-task-points").value;
-        const freq = document.getElementById("add-task-freq").value;
-        const zone = document.getElementById("add-task-zone").value;
-        const tBranch = document.getElementById("add-task-branch").value;
-        const msgEl = document.getElementById("admin-msg");
-        const btn = document.getElementById("btn-add-task");
-
+        const name = document.getElementById("add-task-name").value.trim(),
+          points = document.getElementById("add-task-points").value,
+          freq = document.getElementById("add-task-freq").value,
+          zone = document.getElementById("add-task-zone").value,
+          tBranch = document.getElementById("add-task-branch").value,
+          msgEl = document.getElementById("admin-msg"),
+          btn = document.getElementById("btn-add-task");
         if (!name || !points) {
-          msgEl.innerText = "กรุณากรอกข้อมูลให้ครบนะคะ";
+          msgEl.innerText = "กรอกข้อมูลให้ครบนะคะ";
           msgEl.className =
             "text-center text-sm font-bold mt-2 text-red-500 block";
           return;
         }
-
         btn.disabled = true;
         btn.innerHTML = "⏳ กำลังบันทึก...";
-        const actionType = editingTaskId ? "editTask" : "addTask";
         const payload = {
-          action: actionType,
+          action: editingTaskId ? "editTask" : "addTask",
           taskId: editingTaskId,
           name: name,
           points: points,
@@ -1136,21 +1400,17 @@
           zone: zone,
           taskBranch: tBranch,
         };
-
         try {
-          const result = await fetchAPI(payload);
-          if (result.status === "error") throw new Error(result.message);
-
-          msgEl.innerText = "✅ บันทึกสำเร็จ!";
+          await fetchAPI(payload);
+          msgEl.innerText = "✅ สำเร็จ!";
           msgEl.className =
             "text-center text-sm font-bold mt-2 text-[#2a6f78] block";
           cancelEditMode();
           await loadDashboardData(true);
         } catch (e) {
-          msgEl.innerText = "❌ เกิดข้อผิดพลาด: " + (e.message || "");
+          msgEl.innerText = "❌ เกิดข้อผิดพลาด";
           msgEl.className =
             "text-center text-sm font-bold mt-2 text-red-500 block";
-          console.error(e);
         } finally {
           btn.disabled = false;
           btn.innerHTML = editingTaskId ? "บันทึกการแก้ไข" : "บันทึกงานใหม่";
@@ -1161,22 +1421,16 @@
       }
 
       async function handleDeleteTask(taskId, taskName) {
-        if (
-          !confirm(
-            `ต้องการลบงาน "${taskName}" ใช่หรือไม่?\n(งานนี้จะหายไปจากทุกสาขา)`,
-          )
-        )
-          return;
+        if (!confirm(`ต้องการลบงาน "${taskName}" ใช่หรือไม่?`)) return;
         try {
           document.getElementById("admin-task-list").innerHTML =
-            '<div class="text-center text-[#4B2A1D]/40 py-4">⏳ กำลังลบข้อมูล...</div>';
+            '<div class="text-center text-[#4B2A1D]/40 py-4">⏳ กำลังลบ...</div>';
           await fetchAPI({ action: "deleteTask", taskId: taskId });
           if (editingTaskId === taskId) cancelEditMode();
           await loadDashboardData(true);
         } catch (e) {
-          alert("เกิดข้อผิดพลาดในการลบข้อมูลค่ะ");
+          alert("ลบไม่สำเร็จค่ะ");
           renderAdminTaskList();
-          console.error(e);
         }
       }
     </script>
